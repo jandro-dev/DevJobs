@@ -1,3 +1,4 @@
+// Filtro de ubicacion
 
 const filter = document.querySelector("#filter-location");
 const mensaje = document.querySelector("#filter-selected-value");
@@ -48,7 +49,7 @@ filterLevel.addEventListener("change", () => {
 
 // Filtro de tecnologia con array
 
-const filterTechnology = document.querySelector("#filter-technology");
+/* const filterTechnology = document.querySelector("#filter-technology");
 
 filterTechnology.addEventListener("change", () => {
 	const jobs = document.querySelectorAll(".job-listing-card");
@@ -62,7 +63,43 @@ filterTechnology.addEventListener("change", () => {
 
     job.classList.toggle("is-hidden", !isShown);
 	})
-});
+}); */
+
+// Filtro de tecnologia con array (select y con checkboxes) 
+
+const filterTechnology = document.querySelector("#filter-technology");
+const popularCheckboxes = document.querySelectorAll(".popular-technologies input");
+const container = document.querySelector(".jobs-listings");
+
+function filterJobs() {
+	const jobs = document.querySelectorAll(".job-listing-card");
+
+	// Obtenemos valores tanto del select como de los checkboxes
+	const selectedValue = filterTechnology.value.toLowerCase();
+	const selectedCheckboxes = Array.from(popularCheckboxes)
+		.filter((cb) => cb.checked)
+		.map((cb) => cb.value.toLowerCase());
+
+	jobs.forEach((job) => {
+		const technologies = job.getAttribute("data-technology").toLowerCase().split(",").map((tech) => tech.trim());
+
+		let isShown = false;
+
+		// Si existe muestra la oferta
+		if (selectedValue && technologies.includes(selectedValue)) isShown = true;
+
+		// Si hay varias tecnologias seleccionadas muestra las ofertas que coincidan con uno o varios de los checkboxes
+		if (selectedCheckboxes.length > 0) isShown = selectedCheckboxes.some((tech) => technologies.includes(tech));
+
+		// Si no hay filtros muestra todas las ofertas
+		if (selectedValue === "" && selectedCheckboxes.length === 0) isShown = true;
+
+		job.classList.toggle("is-hidden", !isShown);
+	});
+}
+
+filterTechnology.addEventListener("change", filterJobs);
+popularCheckboxes.forEach((cb) => cb.addEventListener("change", filterJobs));
 
 
 // Ejemplos de eventos
