@@ -1,6 +1,7 @@
 
 const filter = document.querySelector("#filter-location");
 const mensaje = document.querySelector("#filter-selected-value");
+
 // Al filtrar dinamicamente no se actualiza el filtro ya que no existen los trabajos antes del filtro
 // const jobs = document.querySelectorAll(".job-listing-card"); // NodeList [0]
 
@@ -28,6 +29,41 @@ filter.addEventListener("change", () => {
 		// }
 	});
 });
+
+// Filtros de nivel
+
+const filterLevel = document.querySelector("#filter-experience-level");
+
+filterLevel.addEventListener("change", () => {
+	const jobs = document.querySelectorAll(".job-listing-card");
+	const selectedValue = filterLevel.value;
+
+	jobs.forEach((job) => {
+		const level = job.getAttribute("data-nivel");
+		const isShown = selectedValue === level || selectedValue === "";
+
+		job.classList.toggle("is-hidden", !isShown);
+	});
+})
+
+// Filtro de tecnologia con array
+
+const filterTechnology = document.querySelector("#filter-technology");
+
+filterTechnology.addEventListener("change", () => {
+	const jobs = document.querySelectorAll(".job-listing-card");
+	const selectedValue = filterTechnology.value.toLowerCase();
+
+	jobs.forEach((job) => {
+		// Convertir el string en un array y eliminar espacios en blanco
+    const technologies = job.getAttribute("data-technology").toLowerCase().split(",").map(tech => tech.trim());
+		
+		const isShown = technologies.includes(selectedValue) || selectedValue === "";
+
+    job.classList.toggle("is-hidden", !isShown);
+	})
+});
+
 
 // Ejemplos de eventos
 
