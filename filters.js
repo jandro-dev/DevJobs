@@ -56,3 +56,30 @@ filter.addEventListener("change", () => {
 // 	console.log("¿Esta pulsada la tecla ctrl?", event.ctrlKey);
 // 	console.log("¿Esta pulsada la tecla alt?", event.altKey);
 // });
+
+
+// Filtro de busqueda por texto introducido mas mostrar cantidad de ofertas filtradas
+
+const searchInput = document.querySelector("#empleos-search-input");
+const results = document.querySelector("#search-selected-value");
+
+searchInput.addEventListener("input", () => {
+	
+	const busqueda = searchInput.value.toLowerCase().trim();
+	const jobs = Array.from(document.querySelectorAll(".job-listing-card"));
+	const total = jobs.length;
+
+	const filtradas = jobs.filter((job) => {
+		const titulo = job.querySelector("h3").textContent.toLowerCase() || "";
+		
+		const isShown = titulo.includes(busqueda) || busqueda === "";
+		job.classList.toggle("is-hidden", !isShown);
+
+		return isShown;
+	})
+
+	const visibles = filtradas.length;
+
+	results.textContent = `${busqueda ? visibles : total} de ${total} ofertas`;
+
+});
