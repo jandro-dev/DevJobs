@@ -124,20 +124,19 @@ function filterJobs() {
 		const jobLocation = job.getAttribute("data-modalidad").toLowerCase();
 		const jobLevel = job.getAttribute("data-nivel").toLowerCase();
 
-		// Filtrado por tecnología
-		let techMatch = true;
+		// Condiciones
+		const conditions = [
+			// Tecnologia: si hay un filtro de tecnología o checkboxes, verificar coincidencia
+			() => !selectedTech || techs.includes(selectedTech),
+			() =>	selectedCheckboxes.length === 0 || selectedCheckboxes.some((t) => techs.includes(t)),
+			// Ubicación
+			() => !selectedLocation || selectedLocation === jobLocation,
+			// Nivel
+			() => !selectedLevel || selectedLevel === jobLevel,
+		];
 
-		if (selectedTech) techMatch = techs.includes(selectedTech);
-		if (selectedCheckboxes.length > 0) techMatch = selectedCheckboxes.some((t) => techs.includes(t));
-
-		// Filtrado por ubicación
-		let locationMatch =	selectedLocation === "" || selectedLocation === jobLocation;
-
-		// Filtrado por nivel
-		let levelMatch = selectedLevel === "" || selectedLevel === jobLevel;
-
-		// Mostrar solo si cumple todos los filtros
-		const isShown = techMatch && locationMatch && levelMatch;
+		// .every() se asegura de que TODAS las condiciones se cumplan
+		const isShown = conditions.every((check) => check());
 
 		job.classList.toggle("is-hidden", !isShown);
 	});
