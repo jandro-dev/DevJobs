@@ -428,7 +428,7 @@ article {
   gap: 0.5rem;
   margin-block: 2rem;
 
-  a {
+  button {
     display: flex;
     align-items: center;
     justify-content: center;
