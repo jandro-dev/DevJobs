@@ -14,14 +14,18 @@
     import React from 'https://esm.sh/react?dev';
     import ReactDOM from 'https://esm.sh/react-dom/client?dev';
 
-    const titulo = React.createElement(
-      'h1', 
-      { style: { color: "#09f" } },
-      'Hola, React.js!'
-    );
+    window.React = React;
+    window.ReactDOM = ReactDOM;
+  </script>
 
-    const rootEl = document.querySelector('#root');
-    const root = ReactDOM.createRoot(rootEl);
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script type="text/babel">
+
+    const titulo = <h1 style={{ color: "#09f"}}>Hola, bienvenido a React.js</h1>;
+
+    const rootElement = document.querySelector('#root');
+    const root = ReactDOM.createRoot(rootElement);
 
     root.render(titulo);
 
