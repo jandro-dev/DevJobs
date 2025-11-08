@@ -18,29 +18,61 @@
     window.ReactDOM = ReactDOM;
   </script>
 
+  <!-- Carga babel para transformar JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <script type="text/babel">
 
+    // Elemento de React
     const titulo = <h1 style={{ color: "#09f"}}>Hola, bienvenido a React.js</h1>;
+
+    // Componente de React
+    function Saludo({ nombre }) {
+      return <h2 style={{ color: "#09f"}}>Hola, {nombre}!</h2>;
+    }
+
+    function App() {
+      return (
+        <div>
+          <Saludo nombre="Midudev" />
+          <Saludo nombre="Ana" />
+          <Saludo nombre="Luis" />
+        </div>
+      );
+    }
 
     const rootElement = document.querySelector('#root');
     const root = ReactDOM.createRoot(rootElement);
 
-    root.render(titulo);
+    root.render(<App/>);
 
-    /* // Crear una tarjeta de empleo sin JSX
-    const tarjetaEmpleo = React.createElement(
-      'article',
-      { className: 'job-listing-card' },
-      React.createElement('h3', null, 'Desarrollador Frontend'),
-      React.createElement('small', null, 'TechCorp | Madrid'),
-      React.createElement('p', null, 'Buscamos desarrollador con experiencia en React'),
-      React.createElement('button', { className: 'button-apply-job' }, 'Aplicar')
+    /* const empleos = [
+      { titulo: 'Frontend Developer', empresa: 'TechCorp', ubicacion: 'Madrid' },
+      { titulo: 'Backend Developer', empresa: 'CodeLabs', ubicacion: 'Barcelona' },
+      { titulo: 'Full Stack Developer', empresa: 'DevStudio', ubicacion: 'Valencia' },
+    ]
+
+    const app = (
+      <div>
+        <h1>DevJobs - Ofertas de empleo</h1>
+        <p>Hay {empleos.length} ofertas disponibles</p>
+
+        <article className="job-listing-card">
+          <h3>{empleos[0].titulo}</h3>
+          <small>
+            {empleos[0].empresa} | {empleos[0].ubicacion}
+          </small>
+          <button className="button-apply-job">Aplicar</button>
+        </article>
+      </div>
     )
 
-    // Renderizar la tarjeta
-    root.render(tarjetaEmpleo) */
+    window.onload = () => {  
+      const rootElement = document.querySelector('#root')
+      const root = ReactDOM.createRoot(rootElement)
+      root.render(app)
+    } */
+    
   </script> 
 
 </head>
