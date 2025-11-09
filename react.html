@@ -24,19 +24,53 @@
   <script type="text/babel">
 
     // Elemento de React
-    const titulo = <h1 style={{ color: "#09f"}}>Hola, bienvenido a React.js</h1>;
+    // const titulo = <h1 style={{ color: "#09f"}}>Hola, bienvenido a React.js</h1>;
 
     // Componente de React
-    function Saludo({ nombre }) {
-      return <h2 style={{ color: "#09f"}}>Hola, {nombre}!</h2>;
+    function JobCard({data, titulo, empresa, ubicacion, description}) {
+
+      const [isApplied, setIsApplied] = React.useState(false);
+
+      function handleClick() {
+        setIsApplied(!isApplied);
+      }
+
+      const text = isApplied ? 'Aplicado' : 'Aplicar';
+      const buttonClass = isApplied ? 'is-applied' : '';
+
+      return (
+        <article 
+          className="job-listing-card"
+          data-modalidad={data?.modalidad}
+          data-nivel={data?.nivel}
+          data-technology={data?.technology}
+        >
+          <div>
+            <h3>{ titulo }</h3>
+            <small>{ empresa } | {ubicacion}</small>
+            <p>{description}</p>
+          </div>
+          <button
+            disabled={isApplied}
+            className={`button-apply-job ${buttonClass}`}
+            onClick={handleClick} // importante llamar a la declaracion de la funcion y no a la ejecucion
+          >
+            {text}
+          </button>
+        </article>
+      );
     }
 
     function App() {
       return (
-        <div>
-          <Saludo nombre="Midudev" />
-          <Saludo nombre="Ana" />
-          <Saludo nombre="Luis" />
+        <div className="jobs-listings">
+          <JobCard 
+            titulo="Frontend Developer" 
+            empresa="TechCorp" 
+            ubicacion="Madrid"
+            description="Desarrolla interfaces de usuario increíbles con nosotros."
+            data={{ modalidad: 'remoto', nivel: 'junior', technology: 'react' }}
+          />
         </div>
       );
     }
@@ -109,11 +143,13 @@
 
 	<main>
   <section class="jobs-search">
-    <h1>React.js, primeros pasos</h1>
-    
+    <h1>React.js, primeros pasos</h1>  
+  </section>
+  
+  <section>
+    <h2>Empleos disponibles</h2>
     <div id="root"></div>
-    </section>
-
+  </section>
     
   </main>
 
