@@ -10,6 +10,10 @@ import jobsData from "./data.json";
 
 function App() {
 
+  const handlePageChange = (page) => {
+    console.log("Página cambiada a:", page);
+  };
+  
 	return (
 		<>
 			<Header />
@@ -19,7 +23,7 @@ function App() {
 
 				<section>
 					<JobListings jobs={jobsData} />
-					<Pagination />
+					<Pagination onPageChange={handlePageChange} />
 				</section>
 			</main>
 
