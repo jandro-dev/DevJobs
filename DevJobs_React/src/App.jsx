@@ -8,11 +8,18 @@ import { JobListings } from "./components/JobListings.jsx";
 
 import jobsData from "./data.json";
 
+const RESULTS_PER_PAGE = 5;
+
 function App() {
 
 	const [currentPage, setCurrentPage] = useState(1);
-	const totalPages = 5; 
+	{/* Math.round -> redondea | Math.ceil -> redondea por arriba | Math.floor -> redondea por abajo */}
+	const totalPages = Math.ceil(jobsData.length / RESULTS_PER_PAGE); 
 
+	const pagedResults = jobsData.slice(
+		(currentPage - 1) * RESULTS_PER_PAGE,
+		currentPage * RESULTS_PER_PAGE
+	);
   const handlePageChange = (page) => {
     console.log("Página cambiada a:", page);
 		setCurrentPage(page);
@@ -27,7 +34,7 @@ function App() {
 				<SearchFormSection />
 
 				<section>
-					<JobListings jobs={jobsData} />
+					<JobListings jobs={pagedResults} />
 					<Pagination
 						currentPage={currentPage}
 						totalPages={totalPages}
