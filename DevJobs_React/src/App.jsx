@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 
 import { Header } from "./components/Header.jsx";
 import { Footer } from "./components/Footer.jsx";
@@ -10,12 +10,17 @@ import jobsData from "./data.json";
 
 function App() {
 
+	const [currentPage, setCurrentPage] = useState(1);
+	const totalPages = 5; 
+
   const handlePageChange = (page) => {
     console.log("Página cambiada a:", page);
+		setCurrentPage(page);
   };
   
 	return (
 		<>
+			{/* Se vuelve a renderizar todo cuando cambia el estado */}
 			<Header />
 
 			<main>
@@ -23,7 +28,11 @@ function App() {
 
 				<section>
 					<JobListings jobs={jobsData} />
-					<Pagination onPageChange={handlePageChange} />
+					<Pagination
+						currentPage={currentPage}
+						totalPages={totalPages}
+						onPageChange={handlePageChange}
+					/>
 				</section>
 			</main>
 
