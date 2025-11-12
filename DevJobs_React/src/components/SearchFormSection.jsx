@@ -1,37 +1,35 @@
 import { useId } from "react";
 
-export function SearchFormSection({ onSearch, onTextFilter }) {
+export function SearchFormSection({ onFiltersChange }) {
+	
 	const idText = useId();
 	const idTechnology = useId();
 	const idLocation = useId();
 	const idExperienceLevel = useId();
-
-	const handleSubmit = (event) => {
+	const idForm = useId();
+	
+	const handleFilterChange = (event) => {
 		event.preventDefault();
 
-		// Esto devuelve un objeto con los datos del formulario
-		const formData = new FormData(event.target);
-
+		const form = document.getElementById(idForm);
+		const formData = new FormData(form);
+		
 		const filters = {
-			technology: formData.get(idTechnology),
-			location: formData.get(idLocation),
-			experienceLevel: formData.get(idExperienceLevel),
+			text: (formData.get(idText)).toLowerCase() || "",
+			technology: formData.get(idTechnology) || "",
+			location: formData.get(idLocation) || "",
+			experienceLevel: formData.get(idExperienceLevel) || "",
 		};
 
-		onSearch(filters);
-	};
-
-	const handleTextChange = (event) => {
-		const text = event.target.value.toLowerCase();
-		onTextFilter(text);
-	};
+		onFiltersChange(filters);
+	}
 
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form onSubmit={handleSubmit} id="empleos-search-form" role="search">
+			<form id={idForm} role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -55,17 +53,14 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						id="empleos-search-input"
 						type="text"
 						placeholder="Buscar trabajos, empresas o habilidades"
-						onChange={handleTextChange}
+						onChange={handleFilterChange}
 					/>
-
-					<button type="submit" style={{ position: "absolute", right: "4px" }}>
-						Buscar
-					</button>
+					
 				</div>
 				<span id="search-selected-value"></span>
 
 				<div className="search-filters">
-					<select name={idTechnology} id="filter-technology">
+					<select name={idTechnology} id="filter-technology" onChange={handleFilterChange}>
 						<option value="">Tecnología</option>
 						<optgroup label="Tecnologías populares">
 							<option value="javascript">JavaScript</option>
@@ -83,7 +78,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						<option value="php">PHP</option>
 					</select>
 
-					<select name={idLocation} id="filter-location">
+					<select name={idLocation} id="filter-location" onChange={handleFilterChange}>
 						<option value="">Ubicación</option>
 						<option value="remoto">Remoto</option>
 						<option value="cdmx">Ciudad de México</option>
@@ -92,7 +87,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						<option value="barcelona">Barcelona</option>
 					</select>
 
-					<select name={idExperienceLevel} id="filter-experience-level">
+					<select name={idExperienceLevel} id="filter-experience-level" onChange={handleFilterChange}>
 						<option value="">Nivel de experiencia</option>
 						<option value="junior">Junior</option>
 						<option value="mid">Mid-level</option>
