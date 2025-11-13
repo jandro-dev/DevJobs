@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 import { Header } from "./components/Header.jsx";
 import { Footer } from "./components/Footer.jsx";
 
@@ -7,7 +9,7 @@ import { NotFoundPage } from "./pages/404.jsx"
 
 function App() {
 
-	const currentPath = window.location.pathname
+	const [currentPath, setCurrentPath] = useState(window.location.pathname)
 
 	let page = <NotFoundPage />
 
@@ -17,6 +19,19 @@ function App() {
 	} else if (currentPath === "/search") {
 		page = <SearchPage />
 	}
+
+	useEffect(() => {
+
+		const handleLocationChange = () => {
+			setCurrentPath(window.location.pathname)
+		}
+
+		window.addEventListener("popstate", handleLocationChange)
+
+		return () => {
+			window.removeEventListener("popstate", handleLocationChange)
+		}
+	}, [])
 
 	return (
 		<>

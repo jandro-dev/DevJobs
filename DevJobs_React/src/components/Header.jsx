@@ -1,7 +1,10 @@
+
+import { Link } from "./Link.jsx"
+
 export function Header() {
 	return (
 		<header>
-			<a href="/" style={{ textDecoration: "none" }}>
+			<Link href="/" style={{ textDecoration: "none"}}>
 				<h1 style={{ color: "white" }}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -22,10 +25,10 @@ export function Header() {
 						</svg>
 					DevJobs
 				</h1>
-			</a>
+			</Link>
 
 			<nav>
-				<a href="/search">Empleos</a>
+				<Link href="/search">Empleos</Link>
 			</nav>
 		</header>
 	);
