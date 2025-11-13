@@ -61,6 +61,12 @@ export function SearchPage() {
 		setCurrentPage(1);
 	};
 
+	// El efecto se ejecuta solo una vez al montar el componente
+	// Si se le aplica una o varias dependencias, se ejecuta cada vez que esas dependencias cambien sino todo el tiempo
+	useEffect(() => {
+		document.title = `Resultados: ${filteredJobs.length} Página ${currentPage} - DevJobs`;
+	}, [filteredJobs, currentPage])
+
 	return (
 			<main>
 				<SearchFormSection onFiltersChange={handleFiltersChange} />
