@@ -6,13 +6,13 @@ export function SearchFormSection({ onFiltersChange }) {
 	const idTechnology = useId();
 	const idLocation = useId();
 	const idExperienceLevel = useId();
-	const idForm = useId();
 	
 	const handleFilterChange = (event) => {
 		event.preventDefault();
 
-		const form = document.getElementById(idForm);
-		const formData = new FormData(form);
+		// event.target => el evento que recibe el evento
+		// event.currentTarget => el evento que escucha el evento
+		const formData = new FormData(event.currentTarget);
 		
 		const filters = {
 			text: (formData.get(idText)).toLowerCase() || "",
@@ -29,7 +29,7 @@ export function SearchFormSection({ onFiltersChange }) {
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form id={idForm} role="search">
+			<form onChange={handleFilterChange} role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -55,12 +55,15 @@ export function SearchFormSection({ onFiltersChange }) {
 						placeholder="Buscar trabajos, empresas o habilidades"
 						onChange={handleFilterChange}
 					/>
-					
 				</div>
 				<span id="search-selected-value"></span>
 
 				<div className="search-filters">
-					<select name={idTechnology} id="filter-technology" onChange={handleFilterChange}>
+					<select
+						name={idTechnology}
+						id="filter-technology"
+						onChange={handleFilterChange}
+					>
 						<option value="">Tecnología</option>
 						<optgroup label="Tecnologías populares">
 							<option value="javascript">JavaScript</option>
@@ -78,7 +81,11 @@ export function SearchFormSection({ onFiltersChange }) {
 						<option value="php">PHP</option>
 					</select>
 
-					<select name={idLocation} id="filter-location" onChange={handleFilterChange}>
+					<select
+						name={idLocation}
+						id="filter-location"
+						onChange={handleFilterChange}
+					>
 						<option value="">Ubicación</option>
 						<option value="remoto">Remoto</option>
 						<option value="cdmx">Ciudad de México</option>
@@ -87,7 +94,11 @@ export function SearchFormSection({ onFiltersChange }) {
 						<option value="barcelona">Barcelona</option>
 					</select>
 
-					<select name={idExperienceLevel} id="filter-experience-level" onChange={handleFilterChange}>
+					<select
+						name={idExperienceLevel}
+						id="filter-experience-level"
+						onChange={handleFilterChange}
+					>
 						<option value="">Nivel de experiencia</option>
 						<option value="junior">Junior</option>
 						<option value="mid">Mid-level</option>
