@@ -1,11 +1,14 @@
+import { useRouter } from "../hooks/useRouter"
 
 export function Link({ href, children, ...props}) {
 
+	const { navigateTo } = useRouter()
+	
 	const handleClick = (event) => {
+
 		event.preventDefault()
 
-		window.history.pushState({}, "", href) // Cambia la URL sin recargar la pagina
-		window.dispatchEvent(new PopStateEvent("popstate")) // Dispara el evento para que App.jsx detecte el cambio de URL
+		navigateTo(href)
 	}
 
 	return (
