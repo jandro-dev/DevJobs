@@ -1,4 +1,27 @@
-import { useId } from "react";
+import { useId, useState } from "react";
+
+const useSearchForm = ({ idText, idTechnology, idLocation, idExperienceLevel, onFiltersChange }) => {
+
+	const [searchText,setSearchText] = useState("");
+
+	const handleFilterChange = (event) => {
+		event.preventDefault();
+
+		const formData = new FormData(event.currentTarget);
+
+		const filters = {
+			text: formData.get(idText).toLowerCase() || "",
+			technology: formData.get(idTechnology) || "",
+			location: formData.get(idLocation) || "",
+			experienceLevel: formData.get(idExperienceLevel) || "",
+		};
+
+		onFiltersChange(filters);
+		setSearchText(filters.text);
+	};
+
+	return { handleFilterChange, searchText };
+}
 
 export function SearchFormSection({ onFiltersChange }) {
 	
@@ -6,23 +29,10 @@ export function SearchFormSection({ onFiltersChange }) {
 	const idTechnology = useId();
 	const idLocation = useId();
 	const idExperienceLevel = useId();
+
+	const {handleFilterChange} =  useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onFiltersChange });
 	
-	const handleFilterChange = (event) => {
-		event.preventDefault();
-
-		// event.target => el evento que recibe el evento
-		// event.currentTarget => el evento que escucha el evento
-		const formData = new FormData(event.currentTarget);
-		
-		const filters = {
-			text: (formData.get(idText)).toLowerCase() || "",
-			technology: formData.get(idTechnology) || "",
-			location: formData.get(idLocation) || "",
-			experienceLevel: formData.get(idExperienceLevel) || "",
-		};
-
-		onFiltersChange(filters);
-	}
+	
 
 	return (
 		<section className="jobs-search">
