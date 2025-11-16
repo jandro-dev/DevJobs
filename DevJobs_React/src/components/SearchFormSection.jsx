@@ -5,14 +5,25 @@ let timeoutId = null;
 const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter }) => {
 	const [searchText, setSearchText] = useState("");
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
+	const handleChange = (event) => {
+		// event.preventDefault();
+		const {name, value, form} = event.target;
 
-		const formData = new FormData(event.currentTarget);
+		if (name === idText) {
+			setSearchText(value); // actualizamos el input inmediatamente
 
-		if (event.target.name === idText) {
-			return; // ya lo manejamos en onChange
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+			}
+
+			timeoutId = setTimeout(() => {
+				onTextFilter(value);
+			}, 500);
+
+			return // se sale para no procesar los filtros
 		}
+
+		const formData = new FormData(form);
 
 		const filters = {
 			technology: formData.get(idTechnology),
@@ -23,24 +34,9 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, on
 		onSearch(filters);
 	};
 
-	const handleTextChange = (event) => {
-		const text = event.target.value;
-		setSearchText(text); // actualizamos el input inmediatamente
-
-		// Debounce: Cancelar el timeout anterior
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-    }
-
-    timeoutId = setTimeout(() => {
-      onTextFilter(text)
-    }, 500)
-  }
-
 	return {
 		searchText,
-		handleSubmit,
-		handleTextChange,
+		handleChange
 	};
 };
 
@@ -50,16 +46,14 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idLocation = useId();
 	const idExperienceLevel = useId();
 
-	 const { 
-		handleSubmit, 
-		handleTextChange } = useSearchForm({idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter});
+	 const { handleChange } = useSearchForm({idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter});
 
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form onChange={handleSubmit} role="search">
+			<form onChange={handleChange} role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +77,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						id="empleos-search-input"
 						type="text"
 						placeholder="Buscar trabajos, empresas o habilidades"
-						onChange={handleTextChange}
+						onChange={handleChange}
 					/>
 				</div>
 				<span id="search-selected-value"></span>
