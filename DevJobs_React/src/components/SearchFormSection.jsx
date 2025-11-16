@@ -6,15 +6,14 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, on
 	const [searchText, setSearchText] = useState("");
 
 	const handleChange = (event) => {
-		// event.preventDefault();
+		event.preventDefault();
+
 		const {name, value, form} = event.target;
 
 		if (name === idText) {
 			setSearchText(value); // actualizamos el input inmediatamente
 
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-			}
+			if (timeoutId) clearTimeout(timeoutId);
 
 			timeoutId = setTimeout(() => {
 				onTextFilter(value);
@@ -34,9 +33,29 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, on
 		onSearch(filters);
 	};
 
+	const resetForm = (form) => {
+		// limpiar debounce
+		if (timeoutId) clearTimeout(timeoutId);
+
+		// limpiar texto
+		setSearchText("");
+		onTextFilter("");
+
+		// limpiar selects
+		form.reset();
+
+		// enviar filtros vacíos
+		onSearch({
+			technology: "",
+			location: "",
+			experienceLevel: "",
+		});
+	};
+
 	return {
 		searchText,
-		handleChange
+		handleChange,
+		resetForm
 	};
 };
 
@@ -46,14 +65,43 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idLocation = useId();
 	const idExperienceLevel = useId();
 
-	 const { handleChange } = useSearchForm({idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter});
+	const { handleChange, resetForm, searchText } = useSearchForm({idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter});
+
+	const [hasFilters, setHasFilters] = useState(false);
+
+	const handleInternalChange = (event) => {
+		handleChange(event);
+
+		const form = event.target.form;
+		const formData = new FormData(form);
+
+		let textValue = searchText;
+
+		// si el evento viene del input de texto, usamos el valor actual del input
+		if (event.target.name === idText) {
+			textValue = event.target.value;
+		}
+
+		const isFiltering =
+			textValue !== "" ||
+			formData.get(idTechnology) ||
+			formData.get(idLocation) ||
+			formData.get(idExperienceLevel);
+
+		setHasFilters(isFiltering);
+	};
+
+	const handleClearFilters = (form) => {
+		resetForm(form);
+		setHasFilters(false); // el boton desaparece instantaneamente
+	};
 
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form onChange={handleChange} role="search">
+			<form onChange={handleInternalChange} role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -71,14 +119,25 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						<path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
 						<path d="M21 21l-6 -6" />
 					</svg>
+					
+						<input
+							name={idText}
+							id="empleos-search-input"
+							type="text"
+							placeholder="Buscar trabajos, empresas o habilidades"
+							value={searchText}
+							onChange={handleInternalChange}
+						/>
 
-					<input
-						name={idText}
-						id="empleos-search-input"
-						type="text"
-						placeholder="Buscar trabajos, empresas o habilidades"
-						onChange={handleChange}
-					/>
+						{hasFilters ? (
+							<button
+								type="button"
+								onClick={(event) => handleClearFilters(event.target.form)}
+							>
+								Limpiar filtros
+							</button>
+						) : null}
+
 				</div>
 				<span id="search-selected-value"></span>
 
