@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pagination } from "../components/Pagination.jsx";
 import { SearchFormSection } from "../components/SearchFormSection.jsx";
 import { JobListings } from "../components/JobListings.jsx";
+import { Loader } from "../components/Loader.jsx";
 
 const RESULTS_PER_PAGE = 5;
 
@@ -120,9 +121,9 @@ export function SearchPage() {
 
 			<section>
 				<h2 style={{ textAlign: "center" }}>Resultados de búsqueda</h2>
-
+				
 				{
-					loading ? <p>Cargando empleos...</p> : <JobListings jobs={jobs} />
+					loading ? <Loader /> : <JobListings jobs={jobs} />
 				}
 
 				<Pagination
