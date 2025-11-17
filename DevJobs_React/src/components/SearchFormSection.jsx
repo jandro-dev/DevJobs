@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { useSearchFilters } from "../hooks/useSearchFilters.jsx";
+import { useSearchForm } from "../hooks/useSearchForm.jsx";
+import { useFiltersClear } from "../hooks/useFiltersClear.jsx";
 
 export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idText = useId();
@@ -7,15 +8,24 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idLocation = useId();
 	const idExperienceLevel = useId();
 
-	const { searchText, hasFilters, handleChange, clearFilters } = useSearchFilters({ onSearch, onTextFilter });
-	const ids = { idText, idTechnology, idLocation, idExperienceLevel }
+	const { 
+		searchText, 
+		setSearchText,
+		handleChange
+	} = useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter });
+
+	 const { 
+		hasFilters, 
+		handleActiveFilters, 
+		clearFilters 
+	} = useFiltersClear({ idText, idTechnology, idLocation, idExperienceLevel, searchText, onSearch, onTextFilter, setSearchText, handleChange });
 
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form onChange={(event) => handleChange(event, ids)} role="search">
+			<form onChange={handleActiveFilters} role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +50,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						type="text"
 						placeholder="Buscar trabajos, empresas o habilidades"
 						value={searchText}
-						onChange={(event) => handleChange(event, ids)}
+						onChange={handleActiveFilters}
 					/>
 
 					{hasFilters ? (
