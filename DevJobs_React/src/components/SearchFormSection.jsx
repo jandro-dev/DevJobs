@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, useRef } from "react";
 import { useSearchForm } from "../hooks/useSearchForm.jsx";
 import { useFiltersClear } from "../hooks/useFiltersClear.jsx";
 
@@ -7,18 +7,35 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idTechnology = useId();
 	const idLocation = useId();
 	const idExperienceLevel = useId();
+	const inputRef = useRef(); // Referencia al input de búsqueda
 
-	const { 
-		searchText, 
+	const { searchText, setSearchText, handleChange } = useSearchForm({
+		idText,
+		idTechnology,
+		idLocation,
+		idExperienceLevel,
+		onSearch,
+		onTextFilter,
+	});
+
+	const { hasFilters, handleActiveFilters, clearFilters } = useFiltersClear({
+		idText,
+		idTechnology,
+		idLocation,
+		idExperienceLevel,
+		searchText,
+		onSearch,
+		onTextFilter,
 		setSearchText,
-		handleChange
-	} = useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter });
+		handleChange,
+	});
 
-	 const { 
-		hasFilters, 
-		handleActiveFilters, 
-		clearFilters 
-	} = useFiltersClear({ idText, idTechnology, idLocation, idExperienceLevel, searchText, onSearch, onTextFilter, setSearchText, handleChange });
+	const handleClearFilters = (event) => {
+		event.preventDefault();
+		inputRef.current.value = "";
+		setSearchText("");
+		onTextFilter("");
+	};
 
 	return (
 		<section className="jobs-search">
@@ -26,6 +43,8 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
 			<form onChange={handleActiveFilters} role="search">
+				<button onClick={handleClearFilters}>Limpiar Filtros</button>
+
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +64,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 					</svg>
 
 					<input
+						ref={inputRef}
 						name={idText}
 						id="empleos-search-input"
 						type="text"

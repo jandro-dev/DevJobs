@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-let timeoutId = null;
-
-export function useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter }) {
-	
+export function useSearchForm({
+	idText,
+	idTechnology,
+	idLocation,
+	idExperienceLevel,
+	onSearch,
+	onTextFilter,
+}) {
+	const timeoutId = useRef(null); // Referencia para el timeout del debounce
 	const [searchText, setSearchText] = useState("");
-	
 
 	const handleChange = (event) => {
 		event.preventDefault();
@@ -16,9 +20,8 @@ export function useSearchForm({ idText, idTechnology, idLocation, idExperienceLe
 			setSearchText(value); // actualiza el input inmediatamente
 
 			// Debounce para el filtro de texto
-			if (timeoutId) clearTimeout(timeoutId);
-			timeoutId = setTimeout(() => onTextFilter(value), 500);
-		
+			if (timeoutId.current) clearTimeout(timeoutId.current);
+			timeoutId.current = setTimeout(() => onTextFilter(value), 500);
 		} else {
 			const formData = new FormData(form);
 
@@ -28,10 +31,10 @@ export function useSearchForm({ idText, idTechnology, idLocation, idExperienceLe
 				location: formData.get(idLocation),
 				experienceLevel: formData.get(idExperienceLevel),
 			};
-			
+
 			onSearch(filters);
-		}		
-	}
+		}
+	};
 
 	return {
 		searchText,
