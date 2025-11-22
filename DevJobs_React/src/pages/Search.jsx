@@ -10,15 +10,25 @@ import { useRouter } from "../hooks/useRouter.jsx";
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
-	const [filters, setFilters] = useState({
-		technology: "",
-		location: "",
-		experienceLevel: "",
+	const [filters, setFilters] = useState(() => {
+		const params = new URLSearchParams(window.location.search);
+		return {
+			technology: params.get("technology") || "",
+			location: params.get("type") || "",
+			experienceLevel: params.get("level") || "",
+		};
 	});
 
-	const [textToFilter, setTextFilter] = useState("");
+	const [textToFilter, setTextFilter] = useState(() => {
+		const params = new URLSearchParams(window.location.search);
+		return params.get("text") || "";
+	});
 
-	const [currentPage, setCurrentPage] = useState(1);
+	const [currentPage, setCurrentPage] = useState(() => {
+		const params = new URLSearchParams(window.location.search);
+		const page = Number(params.get("page"));
+		return Number.isNaN(page) ? page : 1;
+	});
 
 	const [jobs, setJobs] = useState([]);
 	const [total, setTotal] = useState(0)
@@ -100,6 +110,7 @@ const useFilters = () => {
 		jobs,
 		total,
 		currentPage,
+		textToFilter,
 		totalPages,
 		handlePageChange,
 		handleSearch,
@@ -114,8 +125,9 @@ export function SearchPage() {
 		jobs,
 		total,
 		loading,
-		currentPage,
 		totalPages,
+		currentPage,
+		textToFilter,
 		handlePageChange,
 		handleSearch,
 		handleTextFilter
@@ -134,6 +146,7 @@ export function SearchPage() {
 			/>
 
 			<SearchFormSection
+				initialText={textToFilter}
 				onSearch={handleSearch}
 				onTextFilter={handleTextFilter}
 			/>

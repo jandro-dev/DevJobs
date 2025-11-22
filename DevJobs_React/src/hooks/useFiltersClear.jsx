@@ -1,15 +1,13 @@
-export function useFiltersClear({ setSearchText, onTextFilter, inputRef}) {
+export function useFiltersClear({ onTextFilter, inputRef}) {
 
-	const handleClearFilters = (event) => {
+	const handleClearInput = (event) => {
 		event.preventDefault();
 
 		inputRef.current.value = "";
-
-		setSearchText("");
 		onTextFilter("");
 	};
 
-	return { 
-		handleClearFilters 
+	return {
+		handleClearInput
 	};
 }

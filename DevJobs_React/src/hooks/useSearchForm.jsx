@@ -1,16 +1,10 @@
 import { useState, useRef } from "react";
 
-export function useSearchForm({
-	idText,
-	idTechnology,
-	idLocation,
-	idExperienceLevel,
-	onSearch,
-	onTextFilter,
-}) {
+export function useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter }) {
+
 	const timeoutId = useRef(null); // Referencia para el timeout del debounce
 	const [searchText, setSearchText] = useState("");
-	const [hasFilters, setHasFilters] = useState(false);
+	// const [hasFilters, setHasFilters] = useState(false);
 
 	const handleChange = (event) => {
 		event.preventDefault();
@@ -37,6 +31,7 @@ export function useSearchForm({
 		}
 	};
 
+/* 
 	// Detectar filtros activos
 	const handleActiveFilters = (event) => {
 		handleChange(event);
@@ -70,12 +65,14 @@ export function useSearchForm({
 
 		setHasFilters(false);
 	};
+ */
 
 	return {
 		searchText,
-		setSearchText,
-		hasFilters,
-		handleActiveFilters,
-		clearFilters,
+		// setSearchText,
+		// hasFilters,
+		// handleActiveFilters,
+		// clearFilters,
+		handleChange
 	};
 }

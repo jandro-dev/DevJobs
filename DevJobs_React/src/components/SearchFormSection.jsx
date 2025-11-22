@@ -2,38 +2,32 @@ import { useId, useRef } from "react";
 import { useSearchForm } from "../hooks/useSearchForm.jsx";
 import { useFiltersClear } from './../hooks/useFiltersClear';
 
-export function SearchFormSection({ onSearch, onTextFilter }) {
+export function SearchFormSection({ onSearch, onTextFilter, initialText }) {
 	const idText = useId();
 	const idTechnology = useId();
 	const idLocation = useId();
 	const idExperienceLevel = useId();
+	
 	const inputRef = useRef(); // Referencia al input de búsqueda
 
 	const { 
-		searchText,
-		setSearchText,
-		//hasFilters,
-		//clearFilters,
-		handleActiveFilters,
+		// hasFilters,
+		// clearFilters,
+		// handleActiveFilters,
+		// handleChange
+		handleChange,
 	} = useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter });
 
 	const {
-		handleClearFilters
-	} = useFiltersClear({ setSearchText, onSearch, onTextFilter, inputRef });
+		handleClearInput
+	} = useFiltersClear({ onTextFilter, inputRef });
 
-	/* const handleClearFilters = (event) => {
-		event.preventDefault();
-		inputRef.current.value = "";
-		setSearchText("");
-		onTextFilter("");
-	};
- */
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-			<form onChange={handleActiveFilters} role="search">
+			<form onChange={handleChange} id="empleos-search-form" role="search">
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -58,14 +52,12 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						id="empleos-search-input"
 						type="text"
 						placeholder="Buscar trabajos, empresas o habilidades"
-						value={searchText}
-						onChange={handleActiveFilters}
+						onChange={handleChange}
+						defaultValue={initialText}
 					/>
 
-					<button onClick={handleClearFilters}>
-						x
-					</button>
-					
+					<button onClick={handleClearInput}>x</button>
+
 					{/*
 					{hasFilters ? (
 						<button
