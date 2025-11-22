@@ -10,6 +10,7 @@ export function useSearchForm({
 }) {
 	const timeoutId = useRef(null); // Referencia para el timeout del debounce
 	const [searchText, setSearchText] = useState("");
+	const [hasFilters, setHasFilters] = useState(false);
 
 	const handleChange = (event) => {
 		event.preventDefault();
@@ -36,9 +37,45 @@ export function useSearchForm({
 		}
 	};
 
+	// Detectar filtros activos
+	const handleActiveFilters = (event) => {
+		handleChange(event);
+
+		const { name, value, form } = event.target;
+		const formData = new FormData(form);
+
+		const textValue = name === idText ? value : searchText;
+
+		const isFiltering =
+			textValue !== "" ||
+			formData.get(idTechnology) ||
+			formData.get(idLocation) ||
+			formData.get(idExperienceLevel);
+
+		setHasFilters(isFiltering);
+	};
+
+	// Limpiar filtros
+	const clearFilters = (form) => {
+		setSearchText("");
+		onTextFilter("");
+
+		form.reset();
+
+		onSearch({
+			technology: "",
+			location: "",
+			experienceLevel: "",
+		});
+
+		setHasFilters(false);
+	};
+
 	return {
 		searchText,
 		setSearchText,
-		handleChange,
+		hasFilters,
+		handleActiveFilters,
+		clearFilters,
 	};
 }

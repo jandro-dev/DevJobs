@@ -1,6 +1,6 @@
 import { useId, useRef } from "react";
 import { useSearchForm } from "../hooks/useSearchForm.jsx";
-import { useFiltersClear } from "../hooks/useFiltersClear.jsx";
+import { useFiltersClear } from './../hooks/useFiltersClear';
 
 export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idText = useId();
@@ -9,42 +9,31 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 	const idExperienceLevel = useId();
 	const inputRef = useRef(); // Referencia al input de búsqueda
 
-	const { searchText, setSearchText, handleChange } = useSearchForm({
-		idText,
-		idTechnology,
-		idLocation,
-		idExperienceLevel,
-		onSearch,
-		onTextFilter,
-	});
-
-	const { hasFilters, handleActiveFilters, clearFilters } = useFiltersClear({
-		idText,
-		idTechnology,
-		idLocation,
-		idExperienceLevel,
+	const { 
 		searchText,
-		onSearch,
-		onTextFilter,
 		setSearchText,
-		handleChange,
-	});
+		//hasFilters,
+		//clearFilters,
+		handleActiveFilters,
+	} = useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter });
 
-	const handleClearFilters = (event) => {
+	const {
+		handleClearFilters
+	} = useFiltersClear({ setSearchText, onSearch, onTextFilter, inputRef });
+
+	/* const handleClearFilters = (event) => {
 		event.preventDefault();
 		inputRef.current.value = "";
 		setSearchText("");
 		onTextFilter("");
 	};
-
+ */
 	return (
 		<section className="jobs-search">
 			<h1>Encuentra tu próximo trabajo</h1>
 			<p>Explora miles de oportunidades en el sector tecnológico.</p>
 
 			<form onChange={handleActiveFilters} role="search">
-				<button onClick={handleClearFilters}>Limpiar Filtros</button>
-
 				<div className="search-bar">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -73,6 +62,11 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						onChange={handleActiveFilters}
 					/>
 
+					<button onClick={handleClearFilters}>
+						x
+					</button>
+					
+					{/*
 					{hasFilters ? (
 						<button
 							type="button"
@@ -80,7 +74,8 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 						>
 							Limpiar filtros
 						</button>
-					) : null}
+					) : null} 
+					 */}
 				</div>
 				<span id="search-selected-value"></span>
 
