@@ -6,6 +6,7 @@ import { HomePage } from "./pages/Home.jsx";
 import { SearchPage } from "./pages/Search.jsx";
 import { ContactPage } from "./pages/Contact.jsx";
 import { NotFoundPage } from './pages/404';
+import { JobDetail } from "./pages/Detail.jsx";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/search" element={<SearchPage />} />
 					<Route path="/contact" element={<ContactPage />} />
+					<Route path="/jobs/:jobId" element={<JobDetail />} />
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 			<Footer />
