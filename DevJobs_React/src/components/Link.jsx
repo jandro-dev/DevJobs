@@ -1,25 +1,14 @@
-import { useRouter } from "../hooks/useRouter";
+import { Link as NavLink } from "react-router";
 
-export function Link({ href, children, className = "", ...props }) {
-	const { currentPath, navigateTo } = useRouter();
-
-	const handleClick = (event) => {
-		event.preventDefault();
-		navigateTo(href);
-	};
-
-	// Determinar si el link está activo
-	const isActive = currentPath === href;
-	const combinedClassName = `${className} ${isActive ? "isActive" : ""}`.trim();
+// Patron de abstraccion de dependencia de enrutamiento
+export function Link({ href, children, ...props }) {
 
 	return (
-		<a
-			href={href}
+		<NavLink
+			to={href}
 			{...props}
-			className={combinedClassName}
-			onClick={handleClick}
 		>
 			{children}
-		</a>
+		</NavLink>
 	);
 }
