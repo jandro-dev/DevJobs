@@ -23,6 +23,33 @@ function JobSection({ title, content }) {
 	);
 }
 
+function DetailPageBreadCrumb({ job }) {
+	return (
+		<div className={styles.container}>
+			<nav className={styles.breadcrumb}>
+				<Link href="/search" className={styles.breadcrumbButton}>
+					Empleos
+				</Link>
+				<span className={styles.breadcrumbSeparator}>/</span>
+				<span className={styles.breadcrumbCurrent}>{job.titulo}</span>
+			</nav>
+		</div>
+	);
+}
+
+function DetailPageHeader({ job }) {
+	return (
+		<>
+			<header className={styles.header}>
+				<h1 className={styles.title}>{job.titulo}</h1>
+				<p className={styles.meta}>
+					{job.empresa} · {job.ubicacion}
+				</p>
+			</header>
+		</>
+	);
+}
+
 
 export function JobDetail() {
 
@@ -37,7 +64,7 @@ export function JobDetail() {
 		fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
 			.then(response => {
 				if (!response.ok) {
-					throw new Error("Job not found");
+					navigate("/not-found");
 				} 
 
 				return response.json();
@@ -51,7 +78,7 @@ export function JobDetail() {
 			.finally(() => {
 				setLoading(false)
 			})
-	}, [jobId]);
+	}, [jobId, navigate]);
 
 	// Lo que renderiza cuando carga
 	if (loading) {
@@ -85,34 +112,22 @@ export function JobDetail() {
 
 	// Lo que renderiza si todo va bien
 	return (
-		 <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
-			<div className={styles.container}>
-				<nav className={styles.breadcrumb}>
-					<Link href="/search" className={styles.breadcrumbButton}>
-						Empleos
-					</Link>
-					<span className={styles.breadcrumbSeparator}>/</span>
-					<span className={styles.breadcrumbCurrent}>{job.titulo}</span>
-				</nav>
-			</div>
+		<div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>
+			<DetailPageBreadCrumb job={job} />
+			<DetailPageHeader job={job} />
 
-			<header className={styles.header}>
-				<h1 className={styles.title}>
-					{job.titulo}
-				</h1>
-				<p className={styles.meta}>
-					{job.empresa} · {job.ubicacion}
-				</p>
-			</header>
+			<button className={styles.applyButton}>Aplicar ahora</button>
 
-			<button className={styles.applyButton}>
-				Aplicar ahora
-			</button>
-
-			<JobSection title="Descripción del puesto" content={job.content.description} />
-      <JobSection title="Responsabilidades" content={job.content.responsibilities} />
-      <JobSection title="Requisitios" content={job.content.requirements} />
-      <JobSection title="Acerca de la empresa" content={job.content.about} />
+			<JobSection
+				title="Descripción del puesto"
+				content={job.content.description}
+			/>
+			<JobSection
+				title="Responsabilidades"
+				content={job.content.responsibilities}
+			/>
+			<JobSection title="Requisitios" content={job.content.requirements} />
+			<JobSection title="Acerca de la empresa" content={job.content.about} />
 		</div>
 	);
 }
