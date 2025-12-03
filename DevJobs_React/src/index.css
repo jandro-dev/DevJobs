@@ -481,4 +481,6 @@ article {
 .nav-link-active {
   color: yellow;
   pointer-events: none;
+  opacity: .5;
+  user-select: none;
 }
