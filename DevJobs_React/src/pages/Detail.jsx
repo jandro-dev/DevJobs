@@ -39,14 +39,12 @@ function DetailPageBreadCrumb({ job }) {
 
 function DetailPageHeader({ job }) {
 	return (
-		<>
-			<header className={styles.header}>
-				<h1 className={styles.title}>{job.titulo}</h1>
-				<p className={styles.meta}>
-					{job.empresa} · {job.ubicacion}
-				</p>
-			</header>
-		</>
+		<header className={styles.header}>
+			<h1 className={styles.title}>{job.titulo}</h1>
+			<p className={styles.meta}>
+				{job.empresa} · {job.ubicacion}
+			</p>
+		</header>
 	);
 }
 
@@ -57,14 +55,14 @@ export function JobDetail() {
 	const navigate = useNavigate();
 
 	const [job, setJob] = useState(null);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
 			.then(response => {
 				if (!response.ok) {
-					navigate("/not-found");
+					throw new Error("Job not found")
 				} 
 
 				return response.json();
@@ -78,7 +76,7 @@ export function JobDetail() {
 			.finally(() => {
 				setLoading(false)
 			})
-	}, [jobId, navigate]);
+	}, [jobId]);
 
 	// Lo que renderiza cuando carga
 	if (loading) {
