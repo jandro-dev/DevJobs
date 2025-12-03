@@ -10,6 +10,7 @@ import { useRouter } from "../hooks/useRouter.jsx";
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
+
 	const [filters, setFilters] = useState(() => {
 		const params = new URLSearchParams(window.location.search);
 		return {
@@ -36,6 +37,7 @@ const useFilters = () => {
 
 	const { navigateTo } = useRouter()
 
+	// Formar la url con los filtros y la paginacion
 	useEffect(() => {
 		async function fetchJobs() {
 			try {
@@ -71,9 +73,13 @@ const useFilters = () => {
 		fetchJobs();
 	}, [filters, textToFilter, currentPage])
 
+
 	useEffect(() => {
+
+		// Limpia los parametros
 		const params = new URLSearchParams()
 
+		// Añade solo los parametros necesarios
 		if (textToFilter) params.append("text", textToFilter)
 		if (filters.technology) params.append("technology", filters.technology);
 		if (filters.location) params.append("type", filters.location);
@@ -88,8 +94,8 @@ const useFilters = () => {
 		navigateTo(newUrl);	
 	}, [filters, currentPage, textToFilter, navigateTo]);
 
-	const totalPages = Math.ceil(total / RESULTS_PER_PAGE); // Se calcula despues de filtrar para que la paginacion sea correcta
 
+	const totalPages = Math.ceil(total / RESULTS_PER_PAGE); // Se calcula despues de filtrar para que la paginacion sea correcta
 
 	const handlePageChange = (page) => {
 		setCurrentPage(page);
@@ -142,10 +148,7 @@ export function SearchPage() {
 	return (
 		<main>
 			<title>{title}</title>
-			<meta
-				name="description"
-				content="Listado con empleos y filtros para encontrar el trabajo de tus sueños."
-			/>
+			<meta name="description" content="Listado con empleos y filtros para encontrar el trabajo de tus sueños."/>
 
 			<SearchFormSection
 				initialText={textToFilter}
@@ -153,7 +156,6 @@ export function SearchPage() {
 				onSearch={handleSearch}
 				onTextFilter={handleTextFilter}
 			/>
-
 
 			<section>
 				<h2 style={{ textAlign: "center" }}>Resultados de búsqueda</h2>

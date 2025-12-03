@@ -1,6 +1,41 @@
-import { useId, useRef } from "react";
-import { useSearchForm } from "../hooks/useSearchForm.jsx";
-import { useFiltersClear } from './../hooks/useFiltersClear';
+import { useId, useRef, useState } from "react";
+
+const useSearchForm = ({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter }) => {
+
+	const timeoutId = useRef(null) // Referencia para el timeout del debounce
+	const [searchText, setSearchText] = useState("")
+
+	const handleChange = (event) => {
+		event.preventDefault();
+
+		const { name, value, form } = event.target;
+
+		if (name === idText) {
+			setSearchText(value); // actualiza el input inmediatamente
+
+			// Debounce para el filtro de texto
+			if (timeoutId.current) clearTimeout(timeoutId.current);
+			timeoutId.current = setTimeout(() => onTextFilter(value), 500);
+		} else {
+			const formData = new FormData(form);
+
+			// manejar filtros select
+			const filters = {
+				technology: formData.get(idTechnology),
+				location: formData.get(idLocation),
+				experienceLevel: formData.get(idExperienceLevel),
+			};
+
+			onSearch(filters);
+		}
+	};
+
+	return {
+		searchText,
+		handleChange
+	};
+}
+
 
 export function SearchFormSection({ onSearch, onTextFilter, initialText, initialFilters }) {
 	const idText = useId();
@@ -11,16 +46,15 @@ export function SearchFormSection({ onSearch, onTextFilter, initialText, initial
 	const inputRef = useRef(); // Referencia al input de búsqueda
 
 	const { 
-		// hasFilters,
-		// clearFilters,
-		// handleActiveFilters,
-		// handleChange
 		handleChange,
 	} = useSearchForm({ idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter });
 
-	const {
-		handleClearInput
-	} = useFiltersClear({ onTextFilter, inputRef });
+	const handleClearInput = (event) => {
+		event.preventDefault();
+
+		inputRef.current.value = "";
+		onTextFilter("");
+	};
 
 	return (
 		<section className="jobs-search">
@@ -58,16 +92,6 @@ export function SearchFormSection({ onSearch, onTextFilter, initialText, initial
 
 					<button onClick={handleClearInput}>x</button>
 
-					{/*
-					{hasFilters ? (
-						<button
-							type="button"
-							onClick={(event) => clearFilters(event.target.form)}
-						>
-							Limpiar filtros
-						</button>
-					) : null} 
-					 */}
 				</div>
 				<span id="search-selected-value"></span>
 
