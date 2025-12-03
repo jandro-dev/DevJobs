@@ -49,7 +49,7 @@ function DetailPageHeader({ job }) {
 }
 
 
-export function JobDetail() {
+export default function JobDetail() {
 
 	const { jobId } = useParams(); // Devuelve el parámetro de la ruta
 	const navigate = useNavigate();

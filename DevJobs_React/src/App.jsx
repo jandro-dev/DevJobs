@@ -1,24 +1,30 @@
+import { lazy,Suspense } from "react";
+
 import { Routes, Route } from "react-router";
 import { Header } from "./components/Header.jsx";
 import { Footer } from "./components/Footer.jsx";
+import { Loader } from "./components/Loader.jsx";
 
-import { HomePage } from "./pages/Home.jsx";
-import { SearchPage } from "./pages/Search.jsx";
-import { NotFoundPage } from './pages/404';
-import { JobDetail } from "./pages/Detail.jsx";
-
+// Carga perezosa de paginas
+const HomePage = lazy(() => import("./pages/Home.jsx"))
+const SearchPage = lazy(() => import("./pages/Search.jsx"));
+const NotFoundPage = lazy(() => import("./pages/404.jsx"));
+const JobDetail = lazy(() => import("./pages/Detail.jsx"));
 
 function App() {
 
 	return (
 		<>
 			<Header />
+			{/* Lo que carga entre renderizacion de paginas con una conexion lenta */}
+			<Suspense fallback={<div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>Cargando...</div>}>
 				<Routes>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/search" element={<SearchPage />} />
 					<Route path="/jobs/:jobId" element={<JobDetail />} />
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
+			</Suspense>
 			<Footer />
 		</>
 	);
