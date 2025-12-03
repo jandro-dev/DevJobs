@@ -1,41 +1,37 @@
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 
 import { Pagination } from "../components/Pagination.jsx";
 import { SearchFormSection } from "../components/SearchFormSection.jsx";
 import { JobListings } from "../components/JobListings.jsx";
 import { Loader } from "../components/Loader.jsx";
-import { useRouter } from "../hooks/useRouter.jsx";
+import styles from "./Search.module.css"
 
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
 
+	const [searchParams, setSearchParams] = useSearchParams()
+
 	const [filters, setFilters] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
 		return {
-			technology: params.get("technology") || "",
-			location: params.get("type") || "",
-			experienceLevel: params.get("level") || "",
+			technology: searchParams.get("technology") || "",
+			location: searchParams.get("type") || "",
+			experienceLevel: searchParams.get("level") || "",
 		};
 	});
 
-	const [textToFilter, setTextFilter] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
-		return params.get("text") || "";
-	});
+	const [textToFilter, setTextFilter] = useState(() => searchParams.get("text") || "");
 
 	const [currentPage, setCurrentPage] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
-		const page = Number(params.get("page"));
+		const page = Number(searchParams.get("page"));
 		return Number.isNaN(page) ? page : 1;
 	});
 
 	const [jobs, setJobs] = useState([]);
 	const [total, setTotal] = useState(0)
 	const [loading, setLoading] = useState(true);
-
-	const { navigateTo } = useRouter()
 
 	// Formar la url con los filtros y la paginacion
 	useEffect(() => {
@@ -76,23 +72,21 @@ const useFilters = () => {
 
 	useEffect(() => {
 
-		// Limpia los parametros
-		const params = new URLSearchParams()
+		setSearchParams(() => {
+			// Limpia los parametros
+			const params = new URLSearchParams();
 
-		// Añade solo los parametros necesarios
-		if (textToFilter) params.append("text", textToFilter)
-		if (filters.technology) params.append("technology", filters.technology);
-		if (filters.location) params.append("type", filters.location);
-		if (filters.experienceLevel) params.append("level", filters.experienceLevel);
+			// Añade solo los parametros necesarios
+			if (textToFilter) params.set("text", textToFilter);
+			if (filters.technology) params.set("technology", filters.technology);
+			if (filters.location) params.set("type", filters.location);
+			if (filters.experienceLevel) params.set("level", filters.experienceLevel);
 
-		if (currentPage > 1) params.append("page", currentPage);
+			if (currentPage > 1) params.set("page", currentPage);
 
-		const newUrl = params.toString()
-		  ? `${window.location.pathname}?${params.toString()}`
-			: window.location.pathname;
-
-		navigateTo(newUrl);	
-	}, [filters, currentPage, textToFilter, navigateTo]);
+			return params
+		});
+	}, [filters, currentPage, textToFilter, setSearchParams]);
 
 
 	const totalPages = Math.ceil(total / RESULTS_PER_PAGE); // Se calcula despues de filtrar para que la paginacion sea correcta
@@ -148,7 +142,10 @@ export function SearchPage() {
 	return (
 		<main>
 			<title>{title}</title>
-			<meta name="description" content="Listado con empleos y filtros para encontrar el trabajo de tus sueños."/>
+			<meta
+				name="description"
+				content="Listado con empleos y filtros para encontrar el trabajo de tus sueños."
+			/>
 
 			<SearchFormSection
 				initialText={textToFilter}
@@ -157,12 +154,10 @@ export function SearchPage() {
 				onTextFilter={handleTextFilter}
 			/>
 
-			<section>
+			<section className={styles.searchResults}>
 				<h2 style={{ textAlign: "center" }}>Resultados de búsqueda</h2>
-				
-				{
-					loading ? <Loader /> : <JobListings jobs={jobs} />
-				}
+
+				{loading ? <Loader /> : <JobListings jobs={jobs} />}
 
 				<Pagination
 					currentPage={currentPage}
