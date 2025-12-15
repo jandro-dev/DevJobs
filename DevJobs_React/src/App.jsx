@@ -1,4 +1,4 @@
-import { lazy,Suspense } from "react";
+import { lazy,Suspense, useState } from "react";
 
 import { Routes, Route } from "react-router";
 import { Header } from "./components/Header.jsx";
@@ -13,15 +13,25 @@ const JobDetail = lazy(() => import("./pages/Detail.jsx"));
 
 function App() {
 
+	const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+	const handleLogin = () => {
+		setIsLoggedIn(true)
+	}
+
+	const handleLogout = () => {
+		setIsLoggedIn(false);
+	};
+
 	return (
 		<>
-			<Header />
+			<Header isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
 			{/* Lo que carga entre renderizacion de paginas con una conexion lenta */}
 			<Suspense fallback={<div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>Cargando...</div>}>
 				<Routes>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/search" element={<SearchPage />} />
-					<Route path="/jobs/:jobId" element={<JobDetail />} />
+					<Route path="/jobs/:jobId" element={<JobDetail isLoggedIn={isLoggedIn} />} />
 					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 			</Suspense>

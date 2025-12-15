@@ -49,7 +49,7 @@ function DetailPageHeader({ job }) {
 }
 
 
-export default function JobDetail() {
+export default function JobDetail({ isLoggedIn }) {
 
 	const { jobId } = useParams(); // Devuelve el parámetro de la ruta
 	const navigate = useNavigate();
@@ -114,7 +114,9 @@ export default function JobDetail() {
 			<DetailPageBreadCrumb job={job} />
 			<DetailPageHeader job={job} />
 
-			<button className={styles.applyButton}>Aplicar ahora</button>
+			<button disabled={!isLoggedIn} className={styles.applyButton}>
+				{isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}
+			</button>
 
 			<JobSection
 				title="Descripción del puesto"
