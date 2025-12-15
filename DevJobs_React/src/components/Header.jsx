@@ -1,7 +1,10 @@
 import { NavLink } from "react-router";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { Link } from "./Link";
 
-export function Header({ isLoggedIn, onLogin, onLogout }) {
+export function Header() {
+
 	return (
 		<header>
 			<Link href="/" style={{ textDecoration: "none"}}>
@@ -33,12 +36,18 @@ export function Header({ isLoggedIn, onLogin, onLogout }) {
 					to="/search">Empleos</NavLink>
 			</nav>
 
-			{
-				isLoggedIn 
-					? <button onClick={onLogout}>Cerrar sesión</button>
-			 		: <button onClick={onLogin}>Iniciar sesión</button>
-			}
+			<HeaderUserButton />
 
 		</header>
 	);
+}
+
+const HeaderUserButton = () => {
+
+	const { isLoggedIn, login, logout } = useContext(AuthContext);
+
+	return isLoggedIn 
+		? <button onClick={logout}>Cerrar sesión</button>
+		: <button onClick={login}>Iniciar sesión</button>
+
 }

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router"
 import { Link } from "../components/Link";
 import snarkdown from "snarkdown";
 import styles from "./Detail.module.css";
+import { AuthContext } from "../context/AuthContext";
 
 function JobSection({ title, content }) {
 	const html = snarkdown(content);
@@ -39,17 +40,32 @@ function DetailPageBreadCrumb({ job }) {
 
 function DetailPageHeader({ job }) {
 	return (
-		<header className={styles.header}>
-			<h1 className={styles.title}>{job.titulo}</h1>
-			<p className={styles.meta}>
-				{job.empresa} · {job.ubicacion}
-			</p>
-		</header>
+		<>
+			<header className={styles.header}>
+				<h1 className={styles.title}>{job.titulo}</h1>
+				<p className={styles.meta}>
+					{job.empresa} · {job.ubicacion}
+				</p>
+			</header>
+
+			<DetailApplyButton />
+		</>
+	);
+}
+
+function DetailApplyButton() {
+
+	const { isLoggedIn } = useContext(AuthContext);
+
+	return (
+		<button disabled={!isLoggedIn} className={styles.applyButton}>
+			{isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}
+		</button>
 	);
 }
 
 
-export default function JobDetail({ isLoggedIn }) {
+export default function JobDetail() {
 
 	const { jobId } = useParams(); // Devuelve el parámetro de la ruta
 	const navigate = useNavigate();
@@ -113,10 +129,6 @@ export default function JobDetail({ isLoggedIn }) {
 		<div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>
 			<DetailPageBreadCrumb job={job} />
 			<DetailPageHeader job={job} />
-
-			<button disabled={!isLoggedIn} className={styles.applyButton}>
-				{isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}
-			</button>
 
 			<JobSection
 				title="Descripción del puesto"
