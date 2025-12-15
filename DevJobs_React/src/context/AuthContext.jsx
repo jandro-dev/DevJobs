@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, use, useState } from "react";
 
 export const AuthContext = createContext();
 
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-	const context = useContext(AuthContext);
+	const context = use(AuthContext); // Con use se usa para contextos y promesas
 
 	if (context === undefined) {
 		throw new Error("useAuth must be used within an AuthProvider");
