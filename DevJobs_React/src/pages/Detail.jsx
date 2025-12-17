@@ -4,6 +4,7 @@ import { Link } from "../components/Link";
 import snarkdown from "snarkdown";
 import styles from "./Detail.module.css";
 import { useAuthStore } from "../store/authStore";
+import { useFavoritesStore } from "../store/favoriteStore";
 
 function JobSection({ title, content }) {
 	const html = snarkdown(content);
@@ -49,6 +50,7 @@ function DetailPageHeader({ job }) {
 			</header>
 
 			<DetailApplyButton />
+			<DetailFavoriteButton jobId={job.id} />
 		</>
 	);
 }
@@ -60,6 +62,20 @@ function DetailApplyButton() {
 	return (
 		<button disabled={!isLoggedIn} className={styles.applyButton}>
 			{isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}
+		</button>
+	);
+}
+
+function DetailFavoriteButton({ jobId }) {
+
+	const { isFavorite, toggleFavorite } = useFavoritesStore();
+
+	return (
+		<button
+			className={styles.favoriteButton}
+			onClick={() => toggleFavorite(jobId)}
+		>
+			{isFavorite(jobId) ? "💖" : "🤍"}
 		</button>
 	);
 }

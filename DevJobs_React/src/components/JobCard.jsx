@@ -1,16 +1,48 @@
 import { useState } from "react";
 import { Link } from "./Link";
 import styles from "./JobCard.module.css"
+import { useFavoritesStore } from "../store/favoriteStore";
+import { useAuthStore } from "../store/authStore";
 
-export function JobCard({ job }) {
+
+function JobCardFavoriteButton({ jobId }) {
+
+	const { isLoggedIn } = useAuthStore();
+	// Se suscribe a toda la store
+	const { isFavorite, toggleFavorite } = useFavoritesStore();
+
+	// Se suscribe solo a lo necesario ( no funcional del todo pero mejora el rendimiento )
+	// const isFavorite = useFavoritesStore((state) => state.isFavorite);
+	// const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+
+	return (
+		<button disabled={!isLoggedIn} onClick={() => toggleFavorite(jobId)}>
+			{isFavorite(jobId) ? "💖" : "🤍"}
+		</button>
+	);
+}
+
+function JobCardApplyButton({ jobId }) {
 	const [isApplied, setIsApplied] = useState(false);
+	const { isLoggedIn } = useAuthStore();
 
-	const handleApplyClick = () => {
-		setIsApplied(true);
-	};
+
 
 	const buttonClasses = isApplied	? "button-apply-job is-applied"	: "button-apply-job";
 	const buttonText = isApplied ? "Aplicado" : "Aplicar";
+
+	const handleApplyClick = () => {
+		console.log(`Aplicando al trabajo con ID: ${jobId}`);
+		setIsApplied(true);
+	};
+
+	return (
+		<button disabled={!isLoggedIn} className={buttonClasses} onClick={handleApplyClick}>{buttonText}</button>
+	)
+
+}
+
+export function JobCard({ job }) {
 
 	return (
 		<article
@@ -35,9 +67,10 @@ export function JobCard({ job }) {
 				<Link className={styles.details} href={`/jobs/${job.id}`}>
 					Ver detalles
 				</Link>
-				<button className={buttonClasses} onClick={handleApplyClick}>
-					{buttonText}
-				</button>
+				
+				<JobCardApplyButton jobId={job.id}/>
+
+				<JobCardFavoriteButton jobId={job.id} />
 			</div>
 		</article>
 	);
