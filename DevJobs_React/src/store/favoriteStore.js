@@ -5,17 +5,23 @@ export const useFavoritesStore = create((set, get) => ({
 	favorites: [],
 
 	// Acciones
-	addFavorite: (jobId) => 
+	clearFavorites: () => {
+		set({ favorites: [] })
+	},
+
+	addFavorite: (jobId) => {
 		set((state) => ({ 
 			favorites: state.favorites.includes(jobId) 
 				? state.favorites 
 				: [...state.favorites, jobId] 
-		})),
+		}))
+	},
 
-	removeFavorite: (jobId) => 
+	removeFavorite: (jobId) => {
 		set((state) => ({ 
 			favorites: state.favorites.filter((id) => id !== jobId) 
-		})),
+		}))
+	},
 
 	toggleFavorite: (jobId) => {
 		const { addFavorite, removeFavorite, isFavorite } = get();
