@@ -1,19 +1,31 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, basename, extname } from "node:path";
 
-const content = await readFile("./archivo.txt", "utf-8");
+// Simular permisos
+// node --permission --allow-fs-read="./archivo.txt" --allow-fs-write="./output/*" .\manage-files.js
 
-console.log(content);
+let content = "";
 
-const outputDir = join("output", "files", "documents");
+if (process.permission.has("fs.read", "archivo.txt")) {
+	content = await readFile("./archivo.txt", "utf-8");
+	console.log(content);
+} else {
+	console.log("No tienes permiso para leer el archivo.");
+}
 
-await mkdir(outputDir, { recursive: true });
+if (process.permission.has("fs.write", "output/files/documents")) {
+	const outputDir = join("output", "files", "documents");
 
-const uppercaseContent = content.toUpperCase();
-const outputFilePath = join(outputDir, "archivo_mayusculas.txt");
+	await mkdir(outputDir, { recursive: true });
 
-console.log("La extensión es:", extname(outputFilePath));
-console.log("El nombre del archivo es:", basename(outputFilePath));
+	const uppercaseContent = content.toUpperCase();
+	const outputFilePath = join(outputDir, "archivo_mayusculas.txt");
 
-await writeFile(outputFilePath, uppercaseContent);
-console.log("Archivo escrito con contenido en mayúsculas.");
+	console.log("La extensión es:", extname(outputFilePath));
+	console.log("El nombre del archivo es:", basename(outputFilePath));
+
+	await writeFile(outputFilePath, uppercaseContent);
+	console.log("Archivo escrito con contenido en mayúsculas.");
+} else {
+	console.log("No tienes permiso para escribir el archivo.");
+}
