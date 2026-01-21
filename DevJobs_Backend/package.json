@@ -2,6 +2,6 @@
 	"name": "ejemplo-de-node",
 	"type": "module",
 	"dependencies": {
-		"ms": "^2.1.3"
+		"ms": "2.1.3"
 	}
 }
