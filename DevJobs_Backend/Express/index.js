@@ -24,7 +24,7 @@ app.get("/health", (req, res) => {
 });
 
 // Obtener todos los trabajos
-app.get("/get-jobs", (req, res) => {
+app.get("/jobs", (req, res) => {
 	const {
 		text,
 		title,
@@ -63,8 +63,29 @@ app.get("/get-jobs", (req, res) => {
 	return res.json(paginatedJobs);
 });
 
+// Crea un nuevo trabajo
+app.post("/jobs", (req, res) => {
+	// TODO
+});
+
+// Reemplaza un trabajo ( por completo )
+app.put("/jobs/:id", (req, res) => {
+	// TODO
+});
+
+// Actualiza un trabajo ( parcialmente )
+app.patch("/jobs/:id", (req, res) => {
+	// TODO
+});
+
+// Elimina un trabajo
+app.delete("/jobs/:id", (req, res) => {
+	// TODO
+});
+
+// Idempotente: el sistema se queda igual si se llama varias veces
 // Parametros dinamicos
-app.get("/get-single-job/:id", (req, res) => {
+app.get("/jobs/:id", (req, res) => {
 	const { id } = req.params;
 
 	const idNumber = Number(id);
