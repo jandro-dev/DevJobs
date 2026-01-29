@@ -1,7 +1,8 @@
 import express from "express";
 import jobs from "./jobs.json" with { type: "json" };
+import { DEFAULTS } from "./config.js";
 
-const PORT = process.env.PORT ?? 1234;
+const PORT = process.env.PORT ?? DEFAULTS.PORT;
 const app = express();
 
 // Independientemente del metodo que use el cliente, primero pasa por aqui
@@ -24,7 +25,42 @@ app.get("/health", (req, res) => {
 
 // Obtener todos los trabajos
 app.get("/get-jobs", (req, res) => {
-	return res.json(jobs);
+	const {
+		text,
+		title,
+		level,
+		limit = DEFAULTS.LIMIT_PAGINATION,
+		technology,
+		offset = DEFAULTS.LIMIT_OFFSET,
+	} = req.query;
+
+	let filteredJobs = jobs;
+
+	if (text) {
+		const searchTerm = text.toLowerCase();
+		filteredJobs = filteredJobs.filter(
+			(job) =>
+				job.titulo.toLowerCase().includes(searchTerm) ||
+				job.descripcion.toLowerCase().includes(searchTerm),
+		);
+	}
+
+	if (technology) {
+		filteredJobs = filteredJobs.filter((job) =>
+			job.data.technology.includes(technology),
+		);
+	}
+
+	const limitNumber = Number(limit);
+	const offsetNumber = Number(offset);
+
+	const paginatedJobs = filteredJobs.slice(
+		offsetNumber,
+		offsetNumber + limitNumber,
+	);
+
+	console.log(req.query);
+	return res.json(paginatedJobs);
 });
 
 // Parametros dinamicos
