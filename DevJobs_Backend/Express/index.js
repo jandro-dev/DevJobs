@@ -1,15 +1,39 @@
 import express from "express";
+import cors from "cors";
 import jobs from "./jobs.json" with { type: "json" };
 import { DEFAULTS } from "./config.js";
 
 const PORT = process.env.PORT ?? DEFAULTS.PORT;
 const app = express();
 
+app.use(express.json()); // Middleware para parsear JSON
+
+const ACCEPTED_ORIGINS = [
+	"http://localhost:5173",
+	"http://localhost:3000"
+]
+
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (ACCEPTED_ORIGINS.includes(origin)) {
+				return callback(null, true)
+			}
+
+			return callback(new Error("Origin not allowed by CORS"));
+		}
+	})
+)
+
 // Independientemente del metodo que use el cliente, primero pasa por aqui
 app.use((req, res, next) => {
 	const timeString = new Date().toLocaleTimeString();
 	console.log(`[${timeString}] ${req.method} ${req.url}`);
 	next(); // Dejar pasar al siguiente manejador
+});
+
+app.get("/", (req, res) => {
+	return res.send("<h1>Hello World!</h1>");
 });
 
 app.get("/health", (req, res) => {
@@ -23,42 +47,31 @@ app.get("/health", (req, res) => {
 
 // Obtener todos los trabajos
 app.get("/jobs", (req, res) => {
-	const {
-		text,
-		title,
-		level,
-		limit = DEFAULTS.LIMIT_PAGINATION,
-		technology,
-		offset = DEFAULTS.LIMIT_OFFSET,
-	} = req.query;
+	const { text, title, level, limit = DEFAULTS.LIMIT_PAGINATION, technology, offset = DEFAULTS.LIMIT_OFFSET} = req.query;
 
 	let filteredJobs = jobs;
 
 	if (text) {
 		const searchTerm = text.toLowerCase();
-		filteredJobs = filteredJobs.filter(
-			(job) =>
+		filteredJobs = filteredJobs.filter((job) =>
 				job.titulo.toLowerCase().includes(searchTerm) ||
 				job.descripcion.toLowerCase().includes(searchTerm),
-		);
+		)
 	}
 
 	if (technology) {
 		filteredJobs = filteredJobs.filter((job) =>
-			job.data.technology.includes(technology),
-		);
+			job.data.technology.includes(technology)
+		)
 	}
 
 	const limitNumber = Number(limit);
 	const offsetNumber = Number(offset);
 
-	const paginatedJobs = filteredJobs.slice(
-		offsetNumber,
-		offsetNumber + limitNumber,
-	);
+	const paginatedJobs = filteredJobs.slice(offsetNumber, offsetNumber + limitNumber);
 
 	console.log(req.query);
-	return res.json(paginatedJobs);
+	return res.json({ data: paginatedJobs, total: filteredJobs.length , limit: limitNumber, offset: offsetNumber });
 });
 
 // Parametros dinamicos para recuperar un recurso
@@ -76,14 +89,16 @@ app.get("/jobs/:id", (req, res) => {
 
 // Crea un nuevo trabajo
 app.post("/jobs", (req, res) => {
-	const { title, empresa, ubicacion, data } = req.body;
+
+	const { titulo, empresa, ubicacion, descripcion, data } = req.body;
 
 	const newJob = {
 		id: crypto.randomUUID(),
 		titulo,
 		empresa,
 		ubicacion,
-		data,
+		descripcion,
+		data
 	};
 
 	jobs.push(newJob); // se hara en una base de datos con un INSERT
@@ -122,7 +137,7 @@ app.put("/jobs/:id", (req, res) => {
 // Actualiza un trabajo ( parcialmente )
 app.patch("/jobs/:id", (req, res) => {
 	const { id } = req.params;
-	const { title } = req.body;
+	const { titulo } = req.body;
 
 	const jobIndex = jobs.findIndex((job) => job.id === id);
 
@@ -133,7 +148,7 @@ app.patch("/jobs/:id", (req, res) => {
 	// Actualizar solo el título del trabajo
 	jobs[jobIndex] = {
 		...jobs[jobIndex],
-		title,
+		titulo,
 	};
 
 	return res.json(jobs[jobIndex]);
