@@ -11,7 +11,8 @@ app.use(express.json()); // Middleware para parsear JSON
 
 app.use("/jobs", jobsRouter) // /jobs es el prefijo de todas las rutas definidas en jobsRouter
 
-if (process.env.NODE_ENV !== "production") {	
+// Evitar que se ejecute para produccion y testing
+if (!process.env.NODE_ENV) {	
 	app.listen(PORT, () => {
 		console.log(`Server is running on http://localhost:${PORT}`);
 	});
