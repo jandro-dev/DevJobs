@@ -39,7 +39,7 @@ export default function HomePage() {
 						<input
 							name="search" 
 							required 
-							type="text" 
+							type="search" 
 							placeholder="Buscar empleos por título, habilidad o empresa" />
 						
 						<button type="submit">Buscar</button>
