@@ -45,5 +45,5 @@ describe("GET /jobs", () => {
 		);
 	});
 
-	// TO DO test del post, put, patch y delete
+	// TODO test del post, put, patch y delete
 });
