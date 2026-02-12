@@ -3,7 +3,7 @@
 // =================================
 
 // Usar alias desde otro fichero
-import type { User } from "./00-types";
+import type { User, UserEntity } from "./00-types";
 
 // Forma no recomendada de tipar en TS
 const user: { name: string; age: number } = {
@@ -36,4 +36,13 @@ const anotherUser: User = {
 	name: "pepito",
 	age: 30,
 	role: "user"
+};
+
+const entity: UserEntity = {
+	id: 12345,
+	name: "juan",
+	age: 19,
+	role: "user",
+	email: "juan@gmail.com",
+	birthdate: new Date("1999-07-01"),
 };

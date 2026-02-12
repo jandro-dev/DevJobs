@@ -21,20 +21,22 @@ export type User = {
 };
 
 // Intersection types
-type UserEntity = User & UserId & UserWithBirthdate
-
-const entity: UserEntity = {
-	id: 12345,
-	name: "juan",
-	age: 19,
-	role: "user",
-	email: "juan@gmail.com",
-	birthdate: new Date("1999-07-01")
-}
+export type UserEntity = User & UserId & UserWithBirthdate
 
 
 // Propiedades comunes que se usan que no se deberian modificar
 export type Configuration = {
 	readonly apiKey: string,
 	readonly theme: "dark" | "light"
+}
+
+// Index Signatures
+type Dictionary = {
+	[key: string]: string // Esto es para objetos dinamicos si no se conocen las claves antes
+}
+
+const dictionary: Dictionary = {
+	apple: "A fruit is usually red",
+	banana: "A long yellow fruit",
+	cherry: "A small red fruit"
 }
